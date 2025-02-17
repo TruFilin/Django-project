@@ -1,0 +1,58 @@
+/* complaint_list.css */
+
+h1 {
+    text-align: center; /* Центрирование заголовка */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+a {
+    display: block; /* Отображение ссылки как блока */
+    text-align: center; /* Центрирование кнопки добавления */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0; /* Отступ сверху и снизу таблицы */
+    background-color: #e9ecef; /* Цвет фона таблицы */
+}
+
+.data-table th, .data-table td {
+    border: 1px solid #ccc; /* Цвет границы ячеек */
+    padding: 10px; /* Внутренние отступы */
+    text-align: left; /* Выравнивание текста в ячейках по левому краю */
+}
+
+.data-table th {
+    background-color: #007bff; /* Цвет фона заголовков */
+    color: white; /* Цвет текста заголовков */
+}
+
+.data-table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Цвет фона для четных строк */
+}
+
+.data-table tr:hover {
+    background-color: #d1d1d1; /* Цвет при наведении на строку */
+}
+
+button {
+    padding: 5px 10px; /* Внутренние отступы кнопок */
+    margin: 5px; /* Отступ между кнопками */
+    background-color: #007bff; /* Цвет фона кнопок */
+    color: white; /* Цвет текста кнопок */
+    border: none; /* Убираем границу */
+    border-radius: 5px; /* Закругление углов кнопок */
+    cursor: pointer; /* Указатель при наведении */
+}
+
+button:hover {
+    background-color: #0056b3; /* Цвет кнопок при наведении */
+}
+
+p {
+    text-align: center; /* Центрирование текста */
+    margin-top: 20px; /* Отступ сверху */
+    color: #666; /* Цвет текста */
+}

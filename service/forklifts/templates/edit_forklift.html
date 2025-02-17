@@ -1,0 +1,28 @@
+<!-- templates/edit_forklift.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Редактирование погрузчика{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'edit_forklift.css' %}">  <!-- Подключение CSS для страницы редактирования погрузчика -->
+{% endblock %}
+
+{% block content %}
+    <h1>Редактировать погрузчик</h1>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Вывод формы -->
+        <button type="submit">Сохранить изменения</button>
+    </form>
+    <a href="{% url 'forklift_list' %}">Назад к списку погрузчиков</a>
+{% endblock %}

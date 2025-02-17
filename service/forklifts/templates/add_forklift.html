@@ -1,0 +1,35 @@
+<!-- templates/add_forklift.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Добавление погрузчика{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'add_forklift.css' %}">  <!-- Подключение CSS для страницы добавления погрузчика -->
+{% endblock %}
+
+{% block content %}
+    <h1>Добавить погрузчик</h1>
+    
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Вывод формы -->
+        
+        {% for field in form %}
+            {% for error in field.errors %}
+                <p class="error">{{ error }}</p>  <!-- Отображение ошибок для каждого поля -->
+            {% endfor %}
+        {% endfor %}
+        
+        <button type="submit">Сохранить</button>
+    </form>
+    <a href="{% url 'forklift_list' %}">Назад к списку погрузчиков</a>
+{% endblock %}

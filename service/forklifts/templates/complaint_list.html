@@ -1,0 +1,51 @@
+<!-- templates/complaint_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Список рекламаций{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'complaint_list.css' %}">  <!-- Подключение CSS для страницы списка рекламаций -->
+{% endblock %}
+
+{% block content %}
+    <h1>Список рекламаций для погрузчика {{ forklift.serial_number }}</h1>
+    <a href="{% url 'add_complaint' forklift.id %}"><button>Добавить рекламацию</button></a>  <!-- Кнопка для добавления -->
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Дата отказа</th>
+                <th>Наработка, м/час</th>
+                <th>Узел отказа</th>
+                <th>Описание отказа</th>
+                <th>Способ восстановления</th>
+                <th>Используемые запасные части</th>
+                <th>Дата восстановления</th>
+                <th>Время простоя техники</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+            <tr>
+                <td>{{ complaint.failure_date }}</td>
+                <td>{{ complaint.operating_hours }}</td>
+                <td>{{ complaint.failure_node }}</td>
+                <td>{{ complaint.failure_description }}</td>
+                <td>{{ complaint.recovery_method }}</td>
+                <td>{{ complaint.used_parts }}</td>
+                <td>{{ complaint.recovery_date }}</td>
+                <td>{{ complaint.downtime }}</td>
+                <td>
+                    <a href="{% url 'delete_complaint' complaint.id %}"><button>Удалить</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if not complaints %}
+        <p>Нет доступных записей о рекламациях.</p>
+    {% endif %}
+{% endblock %}

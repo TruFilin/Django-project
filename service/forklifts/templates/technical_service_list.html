@@ -1,0 +1,48 @@
+<!-- templates/technical_service_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Список технического обслуживания{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'technical_service_list.css' %}">  <!-- Подключение CSS для страницы списка технического обслуживания -->
+{% endblock %}
+
+{% block content %}
+    <h1>Список технического обслуживания для погрузчика {{ forklift.serial_number }}</h1>
+    <a href="{% url 'add_technical_service' forklift.id %}"><button>Добавить ТО</button></a>  <!-- Кнопка для добавления -->
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Вид ТО</th>
+                <th>Дата проведения ТО</th>
+                <th>Наработка, м/час</th>
+                <th>№ заказ-наряда</th>
+                <th>Дата заказ-наряда</th>
+                <th>Организация, проводившая ТО</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in technical_services %}
+            <tr>
+                <td>{{ service.service_type }}</td>
+                <td>{{ service.maintenance_date }}</td>
+                <td>{{ service.operating_hours }}</td>
+                <td>{{ service.order_number }}</td>
+                <td>{{ service.order_date }}</td>
+                <td>{{ service.organization }}</td>
+                <td>
+                    <a href="{% url 'delete_technical_service' service.id %}"><button>Удалить</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if not technical_services %}
+        <p>Нет доступных записей о техническом обслуживании.</p>
+    {% endif %}
+{% endblock %}
+
