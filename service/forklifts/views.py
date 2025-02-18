@@ -110,19 +110,26 @@ def is_manager(user):
 
 @login_required
 def forklift_list(request):
+    # Определяем, какие погрузчики показывать в зависимости от типа пользователя
     if is_client(request.user):
         # Если пользователь - клиент, показываем только его машины
-        forklifts = Forklift.objects.filter(client=request.user)  # Предполагается, что у вас есть связь с клиентом
+        forklifts = Forklift.objects.filter(client=request.user)
     elif is_service_organization(request.user):
         # Сервисная организация может только смотреть свои машины
-        forklifts = Forklift.objects.filter(service_company=request.user)  # Предполагается, что у вас есть связь с сервисной компанией
+        forklifts = Forklift.objects.filter(service_company=request.user)
     elif is_manager(request.user):
         # Менеджер может видеть и редактировать все машины
         forklifts = Forklift.objects.all()
     else:
         return render(request, 'access_denied.html')  # Доступ запрещен для других пользователей
 
+    # Получаем значение фильтра из URL, если оно есть
+    query = request.GET.get('q')
+    if query:
+        forklifts = forklifts.filter(serial_number__icontains=query) | forklifts.filter(model__icontains=query)  # Фильтрация по заводскому номеру и модели
+
     return render(request, 'forklift_list.html', {'forklifts': forklifts})
+
 
 @login_required
 def technical_service_list(request, forklift_id):
@@ -188,11 +195,7 @@ def add_forklift(request):
     else:
         form = ForkliftForm()
     return render(request, 'add_forklift.html', {'form': form})
-@login_required
-@permission_required('forklifts.view_forklift', raise_exception=True)
-def forklift_list(request):
-    forklifts = Forklift.objects.all()  # Получаем все погрузчики
-    return render(request, 'forklift_list.html', {'forklifts': forklifts})
+
 
 @login_required
 @permission_required('forklifts.delete_forklift', raise_exception=True)
@@ -278,3 +281,16 @@ def delete_complaint(request, complaint_id):
     complaint.delete()
     messages.success(request, "Запись о рекламации успешно удалена.")
     return redirect('complaint_list', forklift_id=complaint.forklift.id)
+
+
+def forklift_detail(request, id):
+    forklift = get_object_or_404(Forklift, id=id)
+    return render(request, 'forklift_detail.html', {'forklift': forklift})
+
+def complaint_detail(request, id):
+    complaint = get_object_or_404(Complaint, id=id)
+    return render(request, 'complaint_detail.html', {'complaint': complaint})
+
+def technical_service_detail(request, id):
+    service = get_object_or_404(TechnicalService, id=id)
+    return render(request, 'technical_service_detail.html', {'service': service})

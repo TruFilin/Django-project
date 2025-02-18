@@ -1,0 +1,17 @@
+<!-- templates/technical_service_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}Детали технического обслуживания{% endblock %}
+
+{% block content %}
+    <h1>Детали технического обслуживания</h1>
+
+    <p><strong>Вид ТО:</strong> {{ service.service_type }}</p>
+    <p><strong>Дата проведения ТО:</strong> {{ service.maintenance_date }}</p>
+    <p><strong>Наработка:</strong> {{ service.operating_hours }} м/час</p>
+    <p><strong>№ заказ-наряда:</strong> {{ service.order_number }}</p>
+    <p><strong>Дата заказ-наряда:</strong> {{ service.order_date }}</p>
+    <p><strong>Организация, проводившая ТО:</strong> {{ service.organization }}</p>
+
+    <a href="{% url 'technical_service_list' service.forklift.id %}">Назад к списку ТО</a>
+{% endblock %}

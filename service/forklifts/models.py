@@ -18,8 +18,6 @@ class Organization(models.Model):
 class FailureNode(models.Model):
     name = models.CharField(max_length=100)
 
-class RecoveryMethod(models.Model):
-    name = models.CharField(max_length=100)
 class BridgeModel(models.Model):
     name = models.CharField(max_length=100)
 
@@ -61,11 +59,8 @@ class Forklift(models.Model):
     def __str__(self):
         return f"{self.serial_number} - {self.model}"
 
-class ServiceType(models.Model):
-    name = models.CharField(max_length=100)
 
-class Organization(models.Model):
-    name = models.CharField(max_length=100)
+
 
 class TechnicalService(models.Model):
     forklift = models.ForeignKey(Forklift, on_delete=models.CASCADE)  # Связь с моделью Forklift
@@ -78,8 +73,7 @@ class TechnicalService(models.Model):
 
     def __str__(self):
         return f"{self.forklift.serial_number} - {self.service_type}"
-class FailureNode(models.Model):
-    name = models.CharField(max_length=100)
+
 
 class RecoveryMethod(models.Model):
     name = models.CharField(max_length=100)

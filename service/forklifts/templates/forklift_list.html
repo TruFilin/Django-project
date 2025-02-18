@@ -10,9 +10,17 @@
 
 {% block content %}
     <h1>Список погрузчиков</h1>
+
+    <!-- Форма фильтрации -->
+    <form method="GET" action="{% url 'forklift_list' %}">
+        <input type="text" id="searchInput" name="q" placeholder="Поиск по заводскому номеру или модели..." value="{{ request.GET.q }}">
+        <button type="submit">Фильтровать</button>
+    </form>
+
     <div>
         <a href="{% url 'add_forklift' %}"><button>Добавить погрузчик</button></a>  <!-- Кнопка для добавления -->
     </div>
+
     <table class="data-table">
         <thead>
             <tr>
@@ -23,7 +31,7 @@
         </thead>
         <tbody>
             {% for forklift in forklifts %}
-            <tr>
+            <tr onclick="window.location.href='{% url 'forklift_detail' forklift.id %}'" style="cursor: pointer;">
                 <td>{{ forklift.serial_number }}</td>
                 <td>{{ forklift.model }}</td>
                 <td>
@@ -41,3 +49,5 @@
         <p>Нет доступных погрузчиков.</p>
     {% endif %}
 {% endblock %}
+
+

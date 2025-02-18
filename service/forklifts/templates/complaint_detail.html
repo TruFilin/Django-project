@@ -1,0 +1,17 @@
+<!-- templates/complaint_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}Детали рекламации{% endblock %}
+
+{% block content %}
+    <h1>Детали рекламации</h1>
+    <p>Дата отказа: {{ complaint.failure_date }}</p>
+    <p>Наработка: {{ complaint.operating_hours }} м/час</p>
+    <p>Узел отказа: {{ complaint.failure_node }}</p>
+    <p>Описание: {{ complaint.failure_description }}</p>
+    <p>Способ восстановления: {{ complaint.recovery_method }}</p>
+    <p>Используемые запчасти: {{ complaint.used_parts }}</p>
+    <p>Дата восстановления: {{ complaint.recovery_date }}</p>
+    <p>Время простоя: {{ complaint.downtime }}</p>
+    <a href="{% url 'complaint_list' complaint.forklift.id %}">Назад к списку рекламаций</a>
+{% endblock %}

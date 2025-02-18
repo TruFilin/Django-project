@@ -14,15 +14,16 @@
     </div>
 
     {% if is_manager %}
-            <div>
-                <form action="{% url 'forklift_list' %}" method="get">
-                    <button type="submit" class="button">Список машин</button>
-                </form>
-                <form action="{% url 'add_forklift' %}" method="get">
-                    <button type="submit" class="button">Добавить машину</button>
-                </form>
-            </div>
-        {% endif %}
+        <div>
+            <form action="{% url 'forklift_list' %}" method="get">
+                <button type="submit" class="button">Список машин</button>
+            </form>
+            <form action="{% url 'add_forklift' %}" method="get">
+                <button type="submit" class="button">Добавить машину</button>
+            </form>
+        </div>
+    {% endif %}
+    
     {% if error_message %}
         <p style="color: red;">{{ error_message }}</p>
     {% endif %}
@@ -51,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr onclick="window.location.href='{% url 'forklift_detail' forklift.id %}'" style="cursor: pointer;">
                     <td>{{ forklift.serial_number }}</td>
                     <td>{{ forklift.model }}</td>
                     <td>{{ forklift.engine_model }}</td>
@@ -93,7 +94,7 @@
                 </thead>
                 <tbody>
                     {% for service in technical_services %}
-                    <tr>
+                    <tr onclick="window.location.href='{% url 'technical_service_detail' service.id %}'" style="cursor: pointer;">
                         <td>{{ service.service_type }}</td>
                         <td>{{ service.maintenance_date }}</td>
                         <td>{{ service.operating_hours }}</td>
@@ -106,14 +107,6 @@
             </table>
         {% else %}
             <p>Нет данных о техническом обслуживании для этого погрузчика.</p>
-        {% endif %}
-
-        {% if can_add_complaint %}
-            <div>
-                <form action="{% url 'add_complaint' forklift.id %}" method="get">
-                    <button type="submit" class="button">Добавить рекламацию</button>
-                </form>
-            </div>
         {% endif %}
 
         {% if complaints %}
@@ -133,7 +126,7 @@
                 </thead>
                 <tbody>
                     {% for complaint in complaints %}
-                    <tr>
+                    <tr onclick="window.location.href='{% url 'complaint_detail' complaint.id %}'" style="cursor: pointer;">
                         <td>{{ complaint.failure_date }}</td>
                         <td>{{ complaint.operating_hours }}</td>
                         <td>{{ complaint.failure_node }}</td>

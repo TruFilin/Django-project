@@ -1,0 +1,18 @@
+   <!-- templates/ваше_приложение/forklift_detail.html -->
+   {% extends 'base.html' %}
+
+   {% block title %}Детали погрузчика{% endblock %}
+
+   {% block content %}
+       <h1>Детали погрузчика {{ forklift.serial_number }}</h1>
+       <p>Модель: {{ forklift.model }}</p>
+       <p>Дата отгрузки: {{ forklift.shipment_date }}</p>
+       <p>Грузополучатель: {{ forklift.consignee }}</p>
+       <p>Адрес поставки: {{ forklift.delivery_address }}</p>
+       <p>Комплектация: {{ forklift.configuration }}</p>
+       <p>Клиент: {{ forklift.client }}</p>
+       <p>Сервисная компания: {{ forklift.service_company }}</p>
+
+       <a href="{% url 'forklift_list' %}">Назад к списку погрузчиков</a>
+   {% endblock %}
+   
