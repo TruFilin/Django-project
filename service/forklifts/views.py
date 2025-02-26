@@ -59,45 +59,48 @@ def add_complaint(request):
 
 
 
+# Проверка роли пользователя (менеджер или сервисная организация)
+def is_manager(user):
+    return user.is_authenticated and user.groups.filter(name='Managers').exists()
+
+def is_service_organization(user):
+    return user.is_authenticated and user.groups.filter(name='ServiceOrganizations').exists()
+
 def search_forklift(request):
     forklift = None
     error_message = None
+    technical_services = None
+    complaints = None
 
     if request.method == 'GET':
         serial_number = request.GET.get('serial_number')
+
         if serial_number:
+            # Ищем погрузчик по заводскому номеру
             try:
-                forklift = get_object_or_404(Forklift, serial_number=serial_number)
+                # Используем filter вместо get_object_or_404
+                forklift = Forklift.objects.filter(serial_number=serial_number).first()
 
-                # Если пользователь авторизован, показываем все данные
-                if request.user.is_authenticated:
-                    technical_services = TechnicalService.objects.filter(forklift=forklift)
-                    complaints = Complaint.objects.filter(forklift=forklift)
-                    return render(request, 'home.html', {
-                        'forklift': forklift,
-                        'technical_services': technical_services,
-                        'complaints': complaints,
-                        'error_message': error_message,
-                        'can_add_complaint': is_manager(request.user) or is_service_organization(request.user),
-                        'is_manager': is_manager(request.user)
-                    })
+                if forklift:
+                    # Если погрузчик найден, загружаем связанные данные
+                    if request.user.is_authenticated:
+                        technical_services = TechnicalService.objects.filter(forklift=forklift)
+                        complaints = Complaint.objects.filter(forklift=forklift)
                 else:
-                    # Если пользователь не авторизован, показываем только основные характеристики
-                    return render(request, 'home.html', {
-                        'forklift': forklift,
-                        'error_message': error_message,
-                        'can_add_complaint': False,
-                        'is_manager': False
-                    })
+                    # Если погрузчик не найден, устанавливаем сообщение об ошибке
+                    error_message = "Погрузчик с указанным заводским номером не найден."
+            except Exception as e:
+                # Обработка других возможных ошибок
+                error_message = "Произошла ошибка при поиске погрузчика."
 
-            except Forklift.DoesNotExist:
-                error_message = "Погрузчик с указанным заводским номером не найден."
-
+    # Передаем данные в контекст
     return render(request, 'home.html', {
         'forklift': forklift,
+        'technical_services': technical_services,
+        'complaints': complaints,
         'error_message': error_message,
-        'can_add_complaint': False,
-        'is_manager': False
+        'can_add_complaint': is_manager(request.user) or is_service_organization(request.user),
+        'is_manager': is_manager(request.user)
     })
 def is_client(user):
     return user.groups.filter(name='Клиент').exists()

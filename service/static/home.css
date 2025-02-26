@@ -1,38 +1,21 @@
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-
-}
-
-.data-table th, .data-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.data-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-.data-table tr:nth-child(even) {
-    background-color: #f9f9f9; /* Зебра для четных строк */
-}
-
-.data-table tr:hover {
-    background-color: #f1f1f1; /* Подсветка строки при наведении */
-}
-
 @font-face {
     font-family: 'PT-Astra-Sans_Bold';
-    src: url('/static/fonts/PT-Astra-Sans_Bold.ttf') format('truetype'); /* Прямой путь к шрифту */
+    src: url('/static/fonts/PT-Astra-Sans_Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
+body {
+    font-family: 'PT-Astra-Sans_Bold', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ebe5d6;
+    color: #333;
+}
+
 h1 {
     color: #163E6C;
     text-align: center;
+    margin-top: 20px;
 }
 
 .search-container {
@@ -46,20 +29,29 @@ h1 {
     width: 300px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 16px;
 }
 
 .search-container button {
-    padding: 10px;
+    padding: 10px 20px;
     margin-left: 10px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
 .search-container button:hover {
     background-color: #0056b3;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin: 20px 0;
 }
 
 .button {
@@ -80,29 +72,66 @@ h1 {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
 }
 
-.data-table th, .data-table td {
-    border: 1px solid #ccc;
-    padding: 10px;
+.data-table th,
+.data-table td {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
     text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .data-table th {
+    position: sticky;
+    top: 0;
     background-color: #007bff;
     color: white;
+    z-index: 1;
 }
 
 .data-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #f9f9f9;
 }
 
 .data-table tr:hover {
     background-color: #e9ecef;
+    cursor: pointer;
 }
 
-.error-message {
-    color: red;
-    text-align: center;
-    margin: 20px 0;
+/* Ширина столбцов */
+.data-table th:first-child,
+.data-table td:first-child {
+    width: 15%; /* Заводской номер */
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 10%; /* Модель */
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 15%; /* Модель двигателя */
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 15%; /* Зав. № двигателя */
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 15%; /* Модель трансмиссии */
+}
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    width: 15%; /* Зав. № трансмиссии */
 }

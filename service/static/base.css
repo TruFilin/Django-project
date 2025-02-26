@@ -10,12 +10,12 @@ body {
     font-family: 'PT-Astra-Sans_Bold', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #ebe5d6;
 }
 
 .header {
-    background-color: #163E6C;
-    color: white;
+    background-color: #ebe5d6;
+    color: black;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -33,16 +33,15 @@ body {
 
 .header button {
     margin-left: 10px;
-    padding: 5px 10px;
-    background-color: white;
-    color: #007bff;
+    padding: 15px 10px;
+    background-color: #d20a11;
+    color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
 }
 
 .header button:hover {
-    background-color: #e9ecef;
+    background-color: red;
 }
 
 .content {
@@ -50,13 +49,14 @@ body {
 }
 
 .footer {
-    background-color: #163E6C;
+    background-color: #163e6c;
     color: white;
     padding: 10px 20px;
     text-align: center;
     width: 100%;
     position: sticky;
     margin-top: 500px;
+    font-family: 'PT-Astra-Sans_Bold', sans-serif;
 }
 
 .footer .phone {

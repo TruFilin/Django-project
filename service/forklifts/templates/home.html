@@ -1,146 +1,165 @@
 <!-- templates/home.html -->
-{% extends 'base.html' %}
-
-{% block title %}Главная страница{% endblock %}
-
-{% block content %}
-    <h1>Проверьте комплектацию и технические характеристики техники Силант</h1>
-
-    <div class="search-container">
-        <form method="GET" action="{% url 'search_forklift' %}">
-            <input type="text" name="serial_number" placeholder="Заводской номер" id="serial_number" required>
-            <button type="submit">Поиск</button>
-        </form>
+{% extends 'base.html' %} {% block title %}Главная страница{% endblock %} {% block content %}
+<h1>Проверьте комплектацию и технические характеристики техники Силант</h1>
+<div class="search-container">
+	<form method="GET" action="{% url 'search_forklift' %}">
+		<input type="text" name="serial_number" placeholder="Заводской номер" id="serial_number" required />
+		<button type="submit">Поиск</button>
+	</form>
+</div>
+{% if error_message %}
+    <div class="error-message">
+        <p style="color: red; text-align: center; font-weight: bold;">{{ error_message }}</p>
     </div>
-
-    {% if is_manager %}
-        <div>
-            <form action="{% url 'forklift_list' %}" method="get">
-                <button type="submit" class="button">Список машин</button>
-            </form>
-            <form action="{% url 'add_forklift' %}" method="get">
-                <button type="submit" class="button">Добавить машину</button>
-            </form>
-        </div>
-    {% endif %}
-    
-    {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
-    {% endif %}
-
-    {% if forklift %}
-        <h2>Данные о погрузчике:</h2>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Заводской номер</th>
-                    <th>Модель</th>
-                    <th>Модель двигателя</th>
-                    <th>Зав. № двигателя</th>
-                    <th>Модель трансмиссии</th>
-                    <th>Зав. № трансмиссии</th>
-                    <th>Модель ведущего моста</th>
-                    <th>Зав. № ведущего моста</th>
-                    <th>Модель управляемого моста</th>
-                    <th>Зав. № управляемого моста</th>
-                    <th>Дата отгрузки с завода</th>
-                    <th>Грузополучатель</th>
-                    <th>Адрес поставки</th>
-                    <th>Комплектация</th>
-                    <th>Клиент</th>
-                    <th>Сервисная компания</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr onclick="window.location.href='{% url 'forklift_detail' forklift.id %}'" style="cursor: pointer;">
-                    <td>{{ forklift.serial_number }}</td>
-                    <td>{{ forklift.model }}</td>
-                    <td>{{ forklift.engine_model }}</td>
-                    <td>{{ forklift.engine_serial_number }}</td>
-                    <td>{{ forklift.transmission_model }}</td>
-                    <td>{{ forklift.transmission_serial_number }}</td>
-                    <td>{{ forklift.drive_bridge_model }}</td>
-                    <td>{{ forklift.drive_bridge_serial_number }}</td>
-                    <td>{{ forklift.controlled_bridge_model }}</td>
-                    <td>{{ forklift.controlled_bridge_serial_number }}</td>
-                    <td>{{ forklift.shipment_date }}</td>
-                    <td>{{ forklift.consignee }}</td>
-                    <td>{{ forklift.delivery_address }}</td>
-                    <td>{{ forklift.configuration }}</td>
-                    <td>{{ forklift.client }}</td>
-                    <td>{{ forklift.service_company }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div>
-            <a href="{% url 'add_technical_service' forklift.id %}">
-                <button class="button">Добавить ТО</button>
-            </a>  <!-- Кнопка для добавления ТО -->
-        </div>
-
-        {% if technical_services %}
-            <h2>Данные о техническом обслуживании:</h2>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Вид ТО</th>
-                        <th>Дата проведения ТО</th>
-                        <th>Наработка, м/час</th>
-                        <th>№ заказ-наряда</th>
-                        <th>Дата заказ-наряда</th>
-                        <th>Организация, проводившая ТО</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for service in technical_services %}
-                    <tr onclick="window.location.href='{% url 'technical_service_detail' service.id %}'" style="cursor: pointer;">
-                        <td>{{ service.service_type }}</td>
-                        <td>{{ service.maintenance_date }}</td>
-                        <td>{{ service.operating_hours }}</td>
-                        <td>{{ service.order_number }}</td>
-                        <td>{{ service.order_date }}</td>
-                        <td>{{ service.organization }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Нет данных о техническом обслуживании для этого погрузчика.</p>
-        {% endif %}
-
-        {% if complaints %}
-            <h2>Данные о рекламациях:</h2>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Дата отказа</th>
-                        <th>Наработка, м/час</th>
-                        <th>Узел отказа</th>
-                        <th>Описание отказа</th>
-                        <th>Способ восстановления</th>
-                        <th>Используемые запасные части</th>
-                        <th>Дата восстановления</th>
-                        <th>Время простоя техники</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for complaint in complaints %}
-                    <tr onclick="window.location.href='{% url 'complaint_detail' complaint.id %}'" style="cursor: pointer;">
-                        <td>{{ complaint.failure_date }}</td>
-                        <td>{{ complaint.operating_hours }}</td>
-                        <td>{{ complaint.failure_node }}</td>
-                        <td>{{ complaint.failure_description }}</td>
-                        <td>{{ complaint.recovery_method }}</td>
-                        <td>{{ complaint.used_parts }}</td>
-                        <td>{{ complaint.recovery_date }}</td>
-                        <td>{{ complaint.downtime }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Нет данных о рекламациях для этого погрузчика.</p>
-        {% endif %}
-    {% endif %}
+{% endif %}
+{% if is_manager %}
+<div>
+	<form action="{% url 'forklift_list' %}" method="get">
+		<button type="submit" class="button">Список машин</button>
+	</form>
+	<form action="{% url 'add_forklift' %}" method="get">
+		<button type="submit" class="button">Добавить машину</button>
+	</form>
+</div>
+{% endif %} {% if error_message %}
+<p style="color: red;">{{ error_message }}</p>
+{% endif %} {% if forklift %}
+<h2>Данные о погрузчике:</h2>
+<table class="data-table" id="forklift-table">
+	<!-- Строка с полями ввода -->
+	<thead>
+		<tr class="filter-row">
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 0)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 1)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 2)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 3)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 4)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 5)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 6)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 7)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 8)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 9)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 10)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 11)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 12)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 13)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 14)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('forklift-table', 15)" /></th>
+		</tr>
+		<tr>
+			<th onclick="sortTable('forklift-table', 0)">Заводской номер</th>
+			<th onclick="sortTable('forklift-table', 1)">Модель</th>
+			<th onclick="sortTable('forklift-table', 2)">Модель двигателя</th>
+			<th onclick="sortTable('forklift-table', 3)">Зав. № двигателя</th>
+			<th onclick="sortTable('forklift-table', 4)">Модель трансмиссии</th>
+			<th onclick="sortTable('forklift-table', 5)">Зав. № трансмиссии</th>
+			<th onclick="sortTable('forklift-table', 6)">Модель ведущего моста</th>
+			<th onclick="sortTable('forklift-table', 7)">Зав. № ведущего моста</th>
+			<th onclick="sortTable('forklift-table', 8)">Модель управляемого моста</th>
+			<th onclick="sortTable('forklift-table', 9)">Зав. № управляемого моста</th>
+			<th onclick="sortTable('forklift-table', 10)">Дата отгрузки с завода</th>
+			<th onclick="sortTable('forklift-table', 11)">Грузополучатель</th>
+			<th onclick="sortTable('forklift-table', 12)">Адрес поставки</th>
+			<th onclick="sortTable('forklift-table', 13)">Комплектация</th>
+			<th onclick="sortTable('forklift-table', 14)">Клиент</th>
+			<th onclick="sortTable('forklift-table', 15)">Сервисная компания</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr onclick="window.location.href='{% url 'forklift_detail' forklift.id %}'" style="cursor: pointer;">
+			<td>{{ forklift.serial_number }}</td>
+			<td>{{ forklift.model }}</td>
+			<td>{{ forklift.engine_model }}</td>
+			<td>{{ forklift.engine_serial_number }}</td>
+			<td>{{ forklift.transmission_model }}</td>
+			<td>{{ forklift.transmission_serial_number }}</td>
+			<td>{{ forklift.drive_bridge_model }}</td>
+			<td>{{ forklift.drive_bridge_serial_number }}</td>
+			<td>{{ forklift.controlled_bridge_model }}</td>
+			<td>{{ forklift.controlled_bridge_serial_number }}</td>
+			<td>{{ forklift.shipment_date }}</td>
+			<td>{{ forklift.consignee }}</td>
+			<td>{{ forklift.delivery_address }}</td>
+			<td>{{ forklift.configuration }}</td>
+			<td>{{ forklift.client }}</td>
+			<td>{{ forklift.service_company }}</td>
+		</tr>
+	</tbody>
+</table>
+{% endif %} {% if technical_services %}
+<a href="{% url 'add_technical_service' forklift.id %}"> <button class="button">Добавить ТО</button> </a>
+<h2>Данные о техническом обслуживании:</h2>
+<table class="data-table" id="technical-services-table">
+	<thead>
+		<tr class="filter-row">
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('technical-services-table', 0)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('technical-services-table', 1)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('technical-services-table', 2)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('technical-services-table', 3)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('technical-services-table', 4)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('technical-services-table', 5)" /></th>
+		</tr>
+		<tr>
+			<th onclick="sortTable('technical-services-table', 0)">Вид ТО</th>
+			<th onclick="sortTable('technical-services-table', 1)">Дата проведения ТО</th>
+			<th onclick="sortTable('technical-services-table', 2)">Наработка, м/час</th>
+			<th onclick="sortTable('technical-services-table', 3)">№ заказ-наряда</th>
+			<th onclick="sortTable('technical-services-table', 4)">Дата заказ-наряда</th>
+			<th onclick="sortTable('technical-services-table', 5)">Организация, проводившая ТО</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for service in technical_services %}
+		<tr onclick="window.location.href='{% url 'technical_service_detail' service.id %}'" style="cursor: pointer;">
+			<td>{{ service.service_type }}</td>
+			<td>{{ service.maintenance_date }}</td>
+			<td>{{ service.operating_hours }}</td>
+			<td>{{ service.order_number }}</td>
+			<td>{{ service.order_date }}</td>
+			<td>{{ service.organization }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endif %} {% if complaints %}
+<h2>Данные о рекламациях:</h2>
+<table class="data-table" id="complaints-table">
+	<thead>
+		<tr class="filter-row">
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 0)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 1)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 2)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 3)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 4)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 5)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 6)" /></th>
+			<th><input type="text" placeholder="Фильтр" onkeyup="filterTable('complaints-table', 7)" /></th>
+		</tr>
+		<tr>
+			<th onclick="sortTable('complaints-table', 0)">Дата отказа</th>
+			<th onclick="sortTable('complaints-table', 1)">Наработка, м/час</th>
+			<th onclick="sortTable('complaints-table', 2)">Узел отказа</th>
+			<th onclick="sortTable('complaints-table', 3)">Описание отказа</th>
+			<th onclick="sortTable('complaints-table', 4)">Способ восстановления</th>
+			<th onclick="sortTable('complaints-table', 5)">Используемые запасные части</th>
+			<th onclick="sortTable('complaints-table', 6)">Дата восстановления</th>
+			<th onclick="sortTable('complaints-table', 7)">Время простоя техники</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for complaint in complaints %}
+		<tr onclick="window.location.href='{% url 'complaint_detail' complaint.id %}'" style="cursor: pointer;">
+			<td>{{ complaint.failure_date }}</td>
+			<td>{{ complaint.operating_hours }}</td>
+			<td>{{ complaint.failure_node }}</td>
+			<td>{{ complaint.failure_description }}</td>
+			<td>{{ complaint.recovery_method }}</td>
+			<td>{{ complaint.used_parts }}</td>
+			<td>{{ complaint.recovery_date }}</td>
+			<td>{{ complaint.downtime }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endif %}
 {% endblock %}
