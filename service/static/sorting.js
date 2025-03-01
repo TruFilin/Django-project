@@ -45,3 +45,52 @@ function filterTable(tableId, column) {
         }
     }
 }
+document.addEventListener('DOMContentLoaded', function () {
+  console.log('Скрипт загружен');
+
+  // Проверяем, были ли найдены данные о погрузчике
+  const forkliftDataFound = document.getElementById('forklift-data-found');
+  if (forkliftDataFound && forkliftDataFound.dataset.found === 'true') {
+    showButton('show-forklift-info'); // Показываем кнопку "Общая информация"
+  }
+
+  // Функция для показа кнопки
+  function showButton(buttonId) {
+    const button = document.getElementById(buttonId);
+    if (button) {
+      button.style.display = 'block';
+    }
+  }
+
+  // Обработчики для кнопок
+  const showToFInfoButton = document.getElementById('show-to-info');
+  if (showToFInfoButton) {
+    showToFInfoButton.addEventListener('click', function () {
+      toggleBlockVisibility('to-info-block');
+    });
+  }
+
+  const showComplaintInfoButton = document.getElementById('show-complaint-info');
+  if (showComplaintInfoButton) {
+    showComplaintInfoButton.addEventListener('click', function () {
+      toggleBlockVisibility('complaint-info-block');
+    });
+  }
+
+  const showForkliftInfoButton = document.getElementById('show-forklift-info');
+  if (showForkliftInfoButton) {
+    showForkliftInfoButton.addEventListener('click', function () {
+      toggleBlockVisibility('forklift-info-block');
+    });
+  }
+
+  // Функция для переключения видимости блока
+  function toggleBlockVisibility(blockId) {
+    const block = document.getElementById(blockId);
+    if (block) {
+      block.style.display = block.style.display === 'none' || block.style.display === '' ? 'block' : 'none';
+    } else {
+      console.error(`Блок с ID "${blockId}" не найден.`);
+    }
+  }
+});

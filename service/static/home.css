@@ -1,15 +1,28 @@
+:root {
+    --primary-color: #007bff;
+    --hover-color: #0056b3;
+    --secondary-color: #f9f9f9;
+    --border-color: #ddd;
+    --background-color: #ebe5d6;
+    --text-color: #333;
+    --error-color: red;
+}
+
+
 @font-face {
     font-family: 'PT-Astra-Sans_Bold';
     src: url('/static/fonts/PT-Astra-Sans_Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
+
 body {
     font-family: 'PT-Astra-Sans_Bold', Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #ebe5d6;
-    color: #333;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
 h1 {
@@ -18,24 +31,31 @@ h1 {
     margin-top: 20px;
 }
 
+
 .search-container {
     display: flex;
     justify-content: center;
     margin: 20px 0;
+    gap: 10px; /* Пространство между элементами */
 }
 
 .search-container input {
     padding: 10px;
     width: 300px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: var(--hover-color);
 }
 
 .search-container button {
     padding: 10px 20px;
-    margin-left: 10px;
-    background-color: #007bff;
+    background-color: var(--hover-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -44,86 +64,83 @@ h1 {
     transition: background-color 0.3s ease;
 }
 
-.search-container button:hover {
-    background-color: #0056b3;
+.search-container button:hover,
+.search-container button:focus {
+    background-color: var(--hover-color);
+    outline: none;
 }
 
 .error-message {
-    color: red;
+    color: var(--error-color);
     text-align: center;
     margin: 20px 0;
 }
 
+
 .button {
     padding: 10px 15px;
-    background-color: #007bff;
+    background-color: var(--hover-color);
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin: 5px;
+    transition: background-color 0.3s ease;
 }
 
-.button:hover {
-    background-color: #4682B4;
+.button:hover,
+.button:focus {
+    background-color: var(--hover-color);
+    outline: none;
+}
+
+
+.data-table-wrapper {
+    overflow-x: auto; /* Скролл для таблицы */
+    margin: 20px 0;
 }
 
 .data-table {
     width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
     font-size: 14px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
+    min-width: 800px; /* Минимальная ширина для мобильных устройств */
 }
 
 .data-table th,
 .data-table td {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     padding: 12px 15px;
     text-align: left;
     vertical-align: middle;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+    /* Разрешаем перенос текста */
+    white-space: normal; /* Включаем перенос */
+    word-break: break-word; /* Разрешаем разрыв длинных слов */
+    overflow-wrap: break-word; /* Дополнительная поддержка переноса */
 }
 
-.data-table th {
-    position: sticky;
-    top: 0;
-    background-color: #007bff;
-    color: white;
-    z-index: 1;
-}
-
-.data-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.data-table tr:hover {
-    background-color: #e9ecef;
-    cursor: pointer;
-}
-
-/* Ширина столбцов */
+/* Ширина столбцов в процентах */
 .data-table th:first-child,
 .data-table td:first-child {
-    width: 15%; /* Заводской номер */
+    width: 20%; /* Заводской номер */
 }
 
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
-    width: 10%; /* Модель */
+    width: 15%; /* Модель */
 }
 
 .data-table th:nth-child(3),
 .data-table td:nth-child(3) {
-    width: 15%; /* Модель двигателя */
+    width: 20%; /* Модель двигателя */
 }
 
 .data-table th:nth-child(4),
 .data-table td:nth-child(4) {
-    width: 15%; /* Зав. № двигателя */
+    width: 20%; /* Зав. № двигателя */
 }
 
 .data-table th:nth-child(5),
@@ -133,5 +150,23 @@ h1 {
 
 .data-table th:nth-child(6),
 .data-table td:nth-child(6) {
-    width: 15%; /* Зав. № трансмиссии */
+    width: 10%; /* Зав. № трансмиссии */
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .data-table th,
+    .data-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .search-container input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .search-container button {
+        width: 100%;
+    }
 }

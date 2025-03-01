@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, login_view,  technical_service_detail, complaint_detail, forklift_detail, edit_forklift,delete_complaint,add_technical_service,delete_technical_service,add_complaint, delete_forklift, add_forklift, logout_view, search_forklift, forklift_list, technical_service_list, complaint_list
+from .views import home, login_view, forklift_info, technical_service_detail, complaint_detail, forklift_detail, edit_forklift,delete_complaint,add_technical_service,delete_technical_service,add_complaint, delete_forklift, add_forklift, logout_view, search_forklift, forklift_list, technical_service_list, complaint_list
 from django.shortcuts import render
 urlpatterns = [
     path('', home, name='home'),
@@ -21,6 +21,7 @@ urlpatterns = [
     path('forklifts/add/', add_forklift, name='add_forklift'),  # Добавление погрузчика
     path('technical-services/', technical_service_list, name='technical_service_list'),  # Список ТО
     path('complaints/', complaint_list, name='complaint_list'),  # Список рекламаций
+    path('forklift/info/', forklift_info, name='forklift_info'),
 ]
 def custom_404_view(request, exception):
     return render(request, '404.html', status=404)

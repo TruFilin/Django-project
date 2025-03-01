@@ -6,7 +6,7 @@ class TransmissionModel(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name  # Возвращаем имя модели
+        return self.name
 
 
 class ServiceType(models.Model):
@@ -28,12 +28,12 @@ class BridgeModel(models.Model):
         name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name  # Возвращаем имя модели
+        return self.name
 class EngineModel(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name  # Возвращаем имя модели
+        return self.name
 
 
 class Forklift(models.Model):

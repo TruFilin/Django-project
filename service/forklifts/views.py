@@ -1,26 +1,24 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import permission_required
-from django.core.exceptions import PermissionDenied# Импортируйте нужные модели
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Forklift, TechnicalService, Complaint
 from forklifts.forms import ForkliftForm
 from django.contrib import messages
-from .forms import TechnicalServiceForm, ComplaintForm  # Импортируйте соответствующие формы
-
+from .forms import TechnicalServiceForm, ComplaintForm
 from django.shortcuts import render
-
-
+import logging
+logger = logging.getLogger('forklift')
 def home(request):
-    user_can_view_forklift = request.user.is_authenticated and request.user.is_staff  # Проверяем, является ли пользователь авторизованным и менеджером
-    user_can_add_forklift = request.user.is_authenticated and request.user.is_staff   # Проверяем, является ли пользователь авторизованным и менеджером
+    user_can_view_forklift = request.user.is_authenticated and request.user.is_staff
+    user_can_add_forklift = request.user.is_authenticated and request.user.is_staff
 
     return render(request, 'home.html', {
         'user_can_view_forklift': user_can_view_forklift,
         'user_can_add_forklift': user_can_add_forklift,
         'user': request.user,
-        # другие данные
+
     })
 
 def login_view(request):
@@ -30,7 +28,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Перенаправление на главную страницу
+            return redirect('home')
         else:
             return render(request, 'login.html', {'error': 'Неверное имя пользователя или пароль'})
 
@@ -38,33 +36,26 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('home')  # Перенаправление на главную страницу
+    return redirect('home')
 
 
-@login_required
-@permission_required('forklifts.add_technicalservice', raise_exception=True)
-def add_technical_service(request):
-    if request.method == 'POST':
-        # Логика для обработки формы добавления ТО
-        pass
-    return render(request, 'add_technical_service.html')
+def is_client(user):
+    is_client = user.groups.filter(name='Клиенты').exists()
+    logger.debug(f"Пользователь: {user.username}, является клиентом: {is_client}")
+    return is_client
 
-@login_required
-@permission_required('forklifts.add_complaint', raise_exception=True)
-def add_complaint(request):
-    if request.method == 'POST':
-        # Логика для обработки формы добавления рекламации
-        pass
-    return render(request, 'add_complaint.html')
-
-
-
-# Проверка роли пользователя (менеджер или сервисная организация)
-def is_manager(user):
-    return user.is_authenticated and user.groups.filter(name='Managers').exists()
 
 def is_service_organization(user):
-    return user.is_authenticated and user.groups.filter(name='ServiceOrganizations').exists()
+    is_service_org = user.groups.filter(name='Сервисная организация').exists()
+    logger.debug(f"Пользователь: {user.username}, является сервисной организацией: {is_service_org}")
+    return is_service_org
+
+
+def is_manager(user):
+    is_manager = user.groups.filter(name='Менеджер').exists()
+    logger.debug(f"Пользователь: {user.username}, является менеджером: {is_manager}")
+    return is_manager
+
 
 def search_forklift(request):
     forklift = None
@@ -76,44 +67,62 @@ def search_forklift(request):
         serial_number = request.GET.get('serial_number')
 
         if serial_number:
-            # Ищем погрузчик по заводскому номеру
             try:
-                # Используем filter вместо get_object_or_404
+                # Ищем погрузчик по заводскому номеру
                 forklift = Forklift.objects.filter(serial_number=serial_number).first()
 
                 if forklift:
-                    # Если погрузчик найден, загружаем связанные данные
+                    # Загружаем связанные данные, если пользователь авторизован
                     if request.user.is_authenticated:
-                        technical_services = TechnicalService.objects.filter(forklift=forklift)
-                        complaints = Complaint.objects.filter(forklift=forklift)
+                        if check_access(request.user, forklift):
+                            technical_services = TechnicalService.objects.filter(forklift=forklift)
+                            complaints = Complaint.objects.filter(forklift=forklift)
+                        else:
+                            error_message = "У вас нет доступа к этому погрузчику."
+                            forklift = None  # Сбрасываем значение forklift, чтобы не отображать его данные
+                    else:
+                        # Если неавторизованный пользователь, показываем только данные о погрузчике
+                        technical_services = None  # Не показываем технические услуги
+                        complaints = None  # Не показываем рекламации
                 else:
-                    # Если погрузчик не найден, устанавливаем сообщение об ошибке
                     error_message = "Погрузчик с указанным заводским номером не найден."
             except Exception as e:
-                # Обработка других возможных ошибок
                 error_message = "Произошла ошибка при поиске погрузчика."
+                logger.error(f"Ошибка: {e}")
 
-    # Передаем данные в контекст
     return render(request, 'home.html', {
         'forklift': forklift,
         'technical_services': technical_services,
         'complaints': complaints,
         'error_message': error_message,
         'can_add_complaint': is_manager(request.user) or is_service_organization(request.user),
-        'is_manager': is_manager(request.user)
+        'is_manager': is_manager(request.user),
+        'is_client': is_client(request.user),
+        'user': request.user,
+        'is_service_organization': is_service_organization(request.user),
     })
-def is_client(user):
-    return user.groups.filter(name='Клиент').exists()
 
-def is_service_organization(user):
-    return user.groups.filter(name='Сервисная организация').exists()
 
-def is_manager(user):
-    return user.groups.filter(name='Менеджер').exists()
-
+def check_access(user, forklift):
+    if is_manager(user):
+        logger.debug(f"Пользователь {user.username} - менеджер, доступ предоставлен.")
+        return True
+    elif is_client(user):
+        logger.debug(
+            f"Пользователь {user.username} - клиент, проверка принадлежности к погрузчику {forklift.serial_number}.")
+        has_access = forklift.client == user
+        logger.debug(f"Доступ к погрузчику {forklift.serial_number}: {has_access}")
+        return has_access
+    elif is_service_organization(user):
+        logger.debug(
+            f"Пользователь {user.username} - сервисная организация, проверка принадлежности к погрузчику {forklift.serial_number}.")
+        has_access = forklift.service_company == user
+        logger.debug(f"Доступ к погрузчику {forklift.serial_number}: {has_access}")
+        return has_access
+    return False
 @login_required
 def forklift_list(request):
-    # Определяем, какие погрузчики показывать в зависимости от типа пользователя
+
     if is_client(request.user):
         # Если пользователь - клиент, показываем только его машины
         forklifts = Forklift.objects.filter(client=request.user)
@@ -297,3 +306,6 @@ def complaint_detail(request, id):
 def technical_service_detail(request, id):
     service = get_object_or_404(TechnicalService, id=id)
     return render(request, 'technical_service_detail.html', {'service': service})
+def forklift_info(request):
+    forklifts = Forklift.objects.all()
+    return render(request, 'partials/forklift_info.html', {'forklifts': forklifts})
