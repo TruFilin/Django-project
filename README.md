@@ -10,7 +10,7 @@
 ## Установка
 
 
-git clone https://github.com/TruFilin/Diplom.git
+git clone https://github.com/TruFilin/Django-project.git
 
 
 pip install -r requirements.txt
