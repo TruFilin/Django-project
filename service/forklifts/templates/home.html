@@ -8,7 +8,7 @@
     <button type="submit">Поиск</button>
   </form>
 </div>
-{% if forklift %}  <!-- Проверяем, что поиск выполнен и есть данные о погрузчике -->
+{% if forklift %}
     <button id="show-forklift-info" class="button" type="button">Общая информация</button>
 {% endif %}
 {% if user.is_authenticated %}
@@ -16,7 +16,7 @@
           <button id="show-to-info" class="button" type="button">ТО</button>
           <button id="show-complaint-info" class="button" type="button">Рекламации</button>
       {% endif %}
-    {% endif %}
+{% endif %}
 {% if error_message %}
     <div class="error-message">
         <p style="color: red; text-align: center; font-weight: bold;">{{ error_message }}</p>
@@ -35,8 +35,7 @@
 {% if error_message %}
 <p style="color: red;">{{ error_message }}</p>
 {% endif %}
-<div id="forklift-info-block" style="display: none;">
-  {% if forklift %}
+<div id="forklift-info-block">
   <h4>Информация о комплектации Вашей технике {{ user.get_full_name|default:user.username }}</h4>
   <h1>Результаты поиска:</h1>
   <h2>Данные о погрузчике:</h2>
@@ -75,28 +74,36 @@
         <th onclick="sortTable('forklift-table', 11)">Грузополучатель</th>
         <th onclick="sortTable('forklift-table', 12)">Адрес поставки</th>
         <th onclick="sortTable('forklift-table', 13)">Комплектация</th>
-        <th onclick="sortTable('forklift-table', 14)">Клиент</th><th onclick="sortTable('forklift-table', 15)">Сервисная компания</th></tr>
+        <th onclick="sortTable('forklift-table', 14)">Клиент</th>
+        <th onclick="sortTable('forklift-table', 15)">Сервисная компания</th>
+      </tr>
     </thead>
     <tbody>
-      <tr onclick="window.location.href='{% url 'forklift_detail' forklift.id %}'" style="cursor: pointer;">
-        <td>{{ forklift.serial_number }}</td>
-        <td>{{ forklift.model }}</td>
-        <td>{{ forklift.engine_model }}</td>
-        <td>{{ forklift.engine_serial_number }}</td>
-        <td>{{ forklift.transmission_model }}</td>
-        <td>{{ forklift.transmission_serial_number }}</td>
-        <td>{{ forklift.drive_bridge_model }}</td>
-        <td>{{ forklift.drive_bridge_serial_number }}</td>
-        <td>{{ forklift.controlled_bridge_model }}</td>
-        <td>{{ forklift.controlled_bridge_serial_number }}</td>
-        <td>{{ forklift.shipment_date }}</td>
-        <td>{{ forklift.consignee }}</td>
-        <td>{{ forklift.delivery_address }}</td>
-        <td>{{ forklift.configuration }}</td>
-        <td>{{ forklift.client }}</td>
-        <td>{{ forklift.service_company }}</td>
-      </tr>
-    </tbody>
+     {% if forklift %}
+     <tr onclick="window.location.href='{% url 'forklift_detail' forklift.id %}'" style="cursor: pointer;">
+       <td>{{ forklift.serial_number }}</td>
+       <td>{{ forklift.model }}</td>
+       <td>{{ forklift.engine_model.name }}</td>  <!-- Обратите внимание на имя поля -->
+       <td>{{ forklift.engine_serial_number }}</td>
+       <td>{{ forklift.transmission_model.name }}</td>  <!-- Обратите внимание на имя поля -->
+       <td>{{ forklift.transmission_serial_number }}</td>
+       <td>{{ forklift.drive_bridge_model.name }}</td>  <!-- Обратите внимание на имя поля -->
+       <td>{{ forklift.drive_bridge_serial_number }}</td>
+       <td>{{ forklift.controlled_bridge_model.name }}</td>  <!-- Обратите внимание на имя поля -->
+       <td>{{ forklift.controlled_bridge_serial_number }}</td>
+       <td>{{ forklift.shipment_date }}</td>
+       <td>{{ forklift.consignee }}</td>
+       <td>{{ forklift.delivery_address }}</td>
+       <td>{{ forklift.configuration }}</td>
+       <td>{{ forklift.client.username }}</td>  <!-- Если client - это User -->
+       <td>{{ forklift.service_company.username }}</td>  <!-- Если service_company - это User -->
+     </tr>
+     {% else %}
+     <tr>
+       <td colspan="16">Нет данных для отображения. Пожалуйста, выполните поиск.</td>
+     </tr>
+     {% endif %}
+   </tbody>
   </table>
 </div>
 <div id="to-info-block" style="display: none;">
@@ -189,9 +196,13 @@
           <td>{{ complaint.downtime }}</td>
         </tr>
         {% endfor %}
+        {% if complaints.count == 0 %}
+        <tr>
+          <td colspan="8">Нет данных о рекламациях для отображения.</td>
+        </tr>
+        {% endif %}
       </tbody>
     </table>
   {% endif %}
 </div>
-{% endif %}
 {% endblock %}

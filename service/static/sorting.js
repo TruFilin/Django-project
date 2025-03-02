@@ -63,12 +63,16 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Обработчики для кнопок
-  const showToFInfoButton = document.getElementById('show-to-info');
-  if (showToFInfoButton) {
-    showToFInfoButton.addEventListener('click', function () {
-      toggleBlockVisibility('to-info-block');
+const showToInfoButton = document.getElementById('show-to-info');
+if (showToInfoButton) {
+    console.log('Кнопка ТО найдена'); // Проверяем, что кнопка найдена
+    showToInfoButton.addEventListener('click', function () {
+        console.log('Кнопка ТО нажата'); // Лог, когда кнопка нажата
+        toggleBlockVisibility('to-info-block');
     });
-  }
+} else {
+    console.log('Кнопка ТО не найдена'); // Лог, если кнопка не найдена
+}
 
   const showComplaintInfoButton = document.getElementById('show-complaint-info');
   if (showComplaintInfoButton) {
